@@ -25,7 +25,7 @@ All the ones out there have one annoyance or another.
 
 ## How do I build?
 
-Install [carthage](https://github.com/Carthage/Carthage) and run `carthage update` to pull in the [CocoaAsyncSocket](https://github.com/robbiehanson/CocoaAsyncSocket). Then build and run. Hopefully it will work.
+Install [carthage](https://github.com/Carthage/Carthage) and run `carthage update` to pull in the [CocoaAsyncSocket](https://github.com/robbiehanson/CocoaAsyncSocket) dependency. Then build and run. Hopefully it will work.
 
 ## What next?
 

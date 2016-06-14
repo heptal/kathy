@@ -29,6 +29,8 @@ Install [carthage](https://github.com/Carthage/Carthage) and run `carthage updat
 
 ## What next?
 
+ * Timestamps
+ * Message consistency
  * Polish notifications
  * Update userlist on join/leave
  * Multiple simultaneous servers

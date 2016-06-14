@@ -1,0 +1,351 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4C57E94C1D08C81D00168EE8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C57E94B1D08C81D00168EE8 /* AppDelegate.swift */; };
+		4C57E94E1D08C81D00168EE8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C57E94D1D08C81D00168EE8 /* Assets.xcassets */; };
+		4C57E9511D08C81D00168EE8 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C57E94F1D08C81D00168EE8 /* MainMenu.xib */; };
+		4C57E9591D08C9E600168EE8 /* ChatWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C57E9581D08C9E600168EE8 /* ChatWindowController.swift */; };
+		4C57E95B1D08CA0900168EE8 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C57E95A1D08CA0900168EE8 /* ChatViewController.swift */; };
+		4C57E95D1D08CA3A00168EE8 /* IRCSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C57E95C1D08CA3A00168EE8 /* IRCSession.swift */; };
+		4C57E95F1D08CA7500168EE8 /* CocoaAsyncSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C57E95E1D08CA7500168EE8 /* CocoaAsyncSocket.framework */; };
+		4C57E9601D08CA7500168EE8 /* CocoaAsyncSocket.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4C57E95E1D08CA7500168EE8 /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		4C57E9641D08CBD000168EE8 /* Helper+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C57E9631D08CBD000168EE8 /* Helper+Extensions.swift */; };
+		4C57E9661D0909D800168EE8 /* IRCMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C57E9651D0909D800168EE8 /* IRCMessage.swift */; };
+		4C57E9681D0F683300168EE8 /* ChatTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C57E9671D0F683300168EE8 /* ChatTextView.swift */; };
+		4C57E96A1D0F684B00168EE8 /* TableViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C57E9691D0F684B00168EE8 /* TableViews.swift */; };
+		4C57E96C1D0F68C100168EE8 /* ChatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C57E96B1D0F68C100168EE8 /* ChatInputView.swift */; };
+		4C76344B1D0FEB0E00B524BA /* PreferencesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C76344A1D0FEB0E00B524BA /* PreferencesWindow.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4C57E9611D08CA7500168EE8 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				4C57E9601D08CA7500168EE8 /* CocoaAsyncSocket.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		4C57E9481D08C81D00168EE8 /* Kathy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kathy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C57E94B1D08C81D00168EE8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		4C57E94D1D08C81D00168EE8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4C57E9501D08C81D00168EE8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		4C57E9521D08C81D00168EE8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4C57E9581D08C9E600168EE8 /* ChatWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatWindowController.swift; sourceTree = "<group>"; };
+		4C57E95A1D08CA0900168EE8 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		4C57E95C1D08CA3A00168EE8 /* IRCSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IRCSession.swift; sourceTree = "<group>"; };
+		4C57E95E1D08CA7500168EE8 /* CocoaAsyncSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaAsyncSocket.framework; path = Carthage/Build/Mac/CocoaAsyncSocket.framework; sourceTree = "<group>"; };
+		4C57E9631D08CBD000168EE8 /* Helper+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Helper+Extensions.swift"; sourceTree = "<group>"; };
+		4C57E9651D0909D800168EE8 /* IRCMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IRCMessage.swift; sourceTree = "<group>"; };
+		4C57E9671D0F683300168EE8 /* ChatTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTextView.swift; sourceTree = "<group>"; };
+		4C57E9691D0F684B00168EE8 /* TableViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViews.swift; sourceTree = "<group>"; };
+		4C57E96B1D0F68C100168EE8 /* ChatInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatInputView.swift; sourceTree = "<group>"; };
+		4C76344A1D0FEB0E00B524BA /* PreferencesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesWindow.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4C57E9451D08C81D00168EE8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4C57E95F1D08CA7500168EE8 /* CocoaAsyncSocket.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4C57E93F1D08C81D00168EE8 = {
+			isa = PBXGroup;
+			children = (
+				4C57E94A1D08C81D00168EE8 /* Kathy */,
+				4C57E9621D08CA7A00168EE8 /* Frameworks */,
+				4C57E9491D08C81D00168EE8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4C57E9491D08C81D00168EE8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4C57E9481D08C81D00168EE8 /* Kathy.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4C57E94A1D08C81D00168EE8 /* Kathy */ = {
+			isa = PBXGroup;
+			children = (
+				4C57E9521D08C81D00168EE8 /* Info.plist */,
+				4C57E94B1D08C81D00168EE8 /* AppDelegate.swift */,
+				4C57E96B1D0F68C100168EE8 /* ChatInputView.swift */,
+				4C57E9671D0F683300168EE8 /* ChatTextView.swift */,
+				4C57E95A1D08CA0900168EE8 /* ChatViewController.swift */,
+				4C57E9581D08C9E600168EE8 /* ChatWindowController.swift */,
+				4C57E9631D08CBD000168EE8 /* Helper+Extensions.swift */,
+				4C57E9651D0909D800168EE8 /* IRCMessage.swift */,
+				4C57E95C1D08CA3A00168EE8 /* IRCSession.swift */,
+				4C76344A1D0FEB0E00B524BA /* PreferencesWindow.swift */,
+				4C57E9691D0F684B00168EE8 /* TableViews.swift */,
+				4C57E94D1D08C81D00168EE8 /* Assets.xcassets */,
+				4C57E94F1D08C81D00168EE8 /* MainMenu.xib */,
+			);
+			path = Kathy;
+			sourceTree = "<group>";
+		};
+		4C57E9621D08CA7A00168EE8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4C57E95E1D08CA7500168EE8 /* CocoaAsyncSocket.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4C57E9471D08C81D00168EE8 /* Kathy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4C57E9551D08C81D00168EE8 /* Build configuration list for PBXNativeTarget "Kathy" */;
+			buildPhases = (
+				4C57E9441D08C81D00168EE8 /* Sources */,
+				4C57E9451D08C81D00168EE8 /* Frameworks */,
+				4C57E9461D08C81D00168EE8 /* Resources */,
+				4C57E9611D08CA7500168EE8 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Kathy;
+			productName = Kathy;
+			productReference = 4C57E9481D08C81D00168EE8 /* Kathy.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4C57E9401D08C81D00168EE8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = heptal;
+				TargetAttributes = {
+					4C57E9471D08C81D00168EE8 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 4C57E9431D08C81D00168EE8 /* Build configuration list for PBXProject "Kathy" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4C57E93F1D08C81D00168EE8;
+			productRefGroup = 4C57E9491D08C81D00168EE8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4C57E9471D08C81D00168EE8 /* Kathy */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4C57E9461D08C81D00168EE8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4C57E94E1D08C81D00168EE8 /* Assets.xcassets in Resources */,
+				4C57E9511D08C81D00168EE8 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4C57E9441D08C81D00168EE8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4C57E96A1D0F684B00168EE8 /* TableViews.swift in Sources */,
+				4C57E95D1D08CA3A00168EE8 /* IRCSession.swift in Sources */,
+				4C57E94C1D08C81D00168EE8 /* AppDelegate.swift in Sources */,
+				4C57E95B1D08CA0900168EE8 /* ChatViewController.swift in Sources */,
+				4C57E9591D08C9E600168EE8 /* ChatWindowController.swift in Sources */,
+				4C57E9681D0F683300168EE8 /* ChatTextView.swift in Sources */,
+				4C76344B1D0FEB0E00B524BA /* PreferencesWindow.swift in Sources */,
+				4C57E96C1D0F68C100168EE8 /* ChatInputView.swift in Sources */,
+				4C57E9661D0909D800168EE8 /* IRCMessage.swift in Sources */,
+				4C57E9641D08CBD000168EE8 /* Helper+Extensions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		4C57E94F1D08C81D00168EE8 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4C57E9501D08C81D00168EE8 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		4C57E9531D08C81D00168EE8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4C57E9541D08C81D00168EE8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		4C57E9561D08C81D00168EE8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				INFOPLIST_FILE = Kathy/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.heptal.Kathy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		4C57E9571D08C81D00168EE8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				INFOPLIST_FILE = Kathy/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.heptal.Kathy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4C57E9431D08C81D00168EE8 /* Build configuration list for PBXProject "Kathy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4C57E9531D08C81D00168EE8 /* Debug */,
+				4C57E9541D08C81D00168EE8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4C57E9551D08C81D00168EE8 /* Build configuration list for PBXNativeTarget "Kathy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4C57E9561D08C81D00168EE8 /* Debug */,
+				4C57E9571D08C81D00168EE8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4C57E9401D08C81D00168EE8 /* Project object */;
+}

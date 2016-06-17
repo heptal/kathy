@@ -69,40 +69,25 @@ class IRCSession: NSObject {
         socket.writeData(message.data, withTimeout: writeTimeout, tag: tag)
     }
 
-    func command(message: String) {
-        let commandMessage = message.substringFromIndex(message.startIndex.successor())
-        print(commandMessage)
-
-        if commandMessage.hasPrefix("server") {
-            if let serverIndex = commandMessage.characters.indexOf(" ") {
-                let server = commandMessage.substringFromIndex(serverIndex.successor())
-                if let portIndex = server.characters.indexOf(" "), port = UInt16(server.substringFromIndex(portIndex.successor())) {
-                    connectToHost(server.substringToIndex(portIndex), port: port)
-                } else {
-                    connectToHost(server, port: 6697)
-                }
+    func command(cmd: String) {
+        if cmd.hasPrefix("/server") {
+            if let matches = " ([^: ]+)[: ]?(.*)?".captures(cmd), server = matches.first {
+                connectToHost(server, port: UInt16(matches.last!) ?? 6697)
             }
 
             return
         }
 
-        if commandMessage.hasPrefix("msg") {
-            let parts = commandMessage.split(" ")
-            if parts.count > 2 {
-                let nick = parts[1]
-                let message = parts.dropFirst(2).joinWithSeparator(" ")
+        if cmd.hasPrefix("/msg") {
+            if let matches = " (\\S+) (.*)".captures(cmd), nick = matches.first, message = matches.last {
                 command("/PRIVMSG \(nick) :\(message)")
             }
 
             return
         }
 
-        if let paramIndex = commandMessage.characters.indexOf(" ") {
-            let command = commandMessage.substringToIndex(paramIndex)
-            let params = commandMessage.substringFromIndex(paramIndex.successor())
+        if let matches = "/(\\S*) ?(.*)".captures(cmd), command = matches.first, params = matches.last {
             sendIRCMessage(IRCMessage(command: command, params: params))
-        } else {
-            sendIRCMessage(IRCMessage(command: commandMessage, params: nil))
         }
     }
 
@@ -128,7 +113,7 @@ extension IRCSession: GCDAsyncSocketDelegate {
     func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
         print("socketDidDisconnect")
         dispatch_async(dispatch_get_main_queue()) {
-            self.delegate.didReceiveStringMessage(err.localizedDescription)
+            self.delegate.didReceiveStringMessage(err.localizedDescription + "\n")
         }
     }
 

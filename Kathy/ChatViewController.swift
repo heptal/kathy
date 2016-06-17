@@ -197,9 +197,7 @@ extension ChatView: IRCDelegate {
                 getChannel(channel, contents: nil)
             }
         case "PRIVMSG":
-            if let params = message.params, index = params.characters.indexOf(" "), nick = message.prefix?.nick {
-                var channel = params.substringToIndex(index)
-                let text = params.substringFromIndex(index.successor().successor()) // Skip space and colon
+            if let nick = message.prefix?.nick, matches = "(\\S+) :?(.*)".captures(message.params), text = matches.last, var channel = matches.first {
                 if channel == self.nick {
                     channel = nick
 
@@ -211,17 +209,13 @@ extension ChatView: IRCDelegate {
                 appendMessageToChannel(channel, message: "\(message.prefix?.nick ?? ""): \(text)\n")
             }
         case "353":
-            if let params = message.params, channelIndex = params.characters.indexOf({ "@=*".containsString(String($0)) }), nicksIndex = params.characters.indexOf(":") {
-                let channelName = params.substringWithRange(channelIndex.successor()..<nicksIndex).trim()
-                let nicks = params.substringFromIndex(nicksIndex.successor()).trim().split(" ")
+            if let matches = "\\S+ [@=*] (\\S+) :(.*) ?".captures(message.params), channelName = matches.first, nicks = matches.last?.split(" ") {
                 let channel = getChannel(channelName, contents: nil)
                 channel.users.unionInPlace(nicks)
                 channels.rearrangeObjects()
             }
         case "332":
-            if let params = message.params, channelIndex = params.characters.indexOf(" "), topicIndex = params.characters.indexOf(":") {
-                let channel = params.substringWithRange(channelIndex..<topicIndex).trim()
-                let topic = params.substringFromIndex(topicIndex.successor()).trim()
+                if let matches = "\\S+ (\\S+) :?(.*) ?".captures(message.params), channel = matches.first, topic = matches.last {
                 appendMessageToChannel(channel, message: "\(topic)\n")
             }
         default:

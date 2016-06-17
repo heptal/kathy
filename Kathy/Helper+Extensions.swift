@@ -42,6 +42,17 @@ extension String {
         return self.componentsSeparatedByString(separator ?? " ")
     }
 
+    func captures(text: String?) -> [String]? {
+        guard let text = text else { return nil }
+        let regex = try? NSRegularExpression(pattern: self, options: [])
+        if let match = regex?.matchesInString(text, options: [], range: NSMakeRange(0, text.utf16.count)).first {
+            return (1..<match.numberOfRanges).map { (i) -> String in
+                return (text as NSString).substringWithRange(match.rangeAtIndex(i))
+            }
+        }
+        return nil
+    }
+
 }
 
 extension NSLayoutConstraint {

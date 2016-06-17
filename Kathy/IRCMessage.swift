@@ -40,9 +40,9 @@ struct IRCMessage: CustomStringConvertible {
         prefix = command != "MODE" ? messagePrefix : nil
     }
 
-    init(command: String, params: String?) {
-        self.command = command.uppercaseString
-        self.params = params
+    init(command cmd: String, params parameters: String?) {
+        command = cmd.uppercaseString
+        params = parameters
         prefix = nil
         raw = command + (params != nil ? " \(params!)" : "") + "\r\n"
     }
@@ -64,8 +64,8 @@ struct IRCMessagePrefix: CustomStringConvertible {
         }
 
         if let nickEnd = prefix.characters.indexOf("!"), userEnd = prefix.characters.indexOf("@") {
-            nick = prefix.substringWithRange(Range(index.successor()..<nickEnd))
-            user = prefix.substringWithRange(Range(nickEnd.successor()..<userEnd))
+            nick = prefix[index.successor()..<nickEnd]
+            user = prefix[nickEnd.successor()..<userEnd]
             index = userEnd
         } else {
             nick = nil

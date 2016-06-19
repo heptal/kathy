@@ -83,7 +83,9 @@ class ChatView: NSView {
         session = IRCSession(delegate: self)
         nick = userDefaults.stringForKey("nick")
         channels.selectsInsertedObjects = true
-        console = getChannel("Server Console", contents: "Welcome to Kathy\n\n")
+        let consoleChannelName = "Server Console"
+        setupChannel(consoleChannelName, contents: "Welcome to Kathy\n\n")
+        console = getChannel(consoleChannelName)
         textView = chatTextView.subviewWithIdentifier("chatView") as? NSTextView
         textView.layoutManager?.replaceTextStorage(console.contents)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(didSelectChannel), name: NSTableViewSelectionDidChangeNotification, object: nil)
@@ -107,20 +109,15 @@ class ChatView: NSView {
         }
     }
 
-    func getChannel(channelName: String, contents: String?) -> Channel {
-        if let channel = (channels.arrangedObjects as? Array<Channel>)?.filter({ (channel) -> Bool in
-            channelName == channel.name
-        }).first {
-            return channel
-        } else {
-            return setupChannel(channelName, contents: contents)
-        }
+    func getChannel(channelName: String) -> Channel? {
+        return (channels.arrangedObjects as? Array<Channel>)?.filter { channelName == $0.name }.first
     }
 
-    func setupChannel(channelName: String, contents: String?) -> Channel {
-        let channel = Channel(name: channelName, contents: NSTextStorage(attributedString: formatMessage(contents ?? "")))
-        channels.addObject(channel)
-        return channel
+    func setupChannel(channelName: String, contents: String?) {
+        if getChannel(channelName) == nil {
+            let channel = Channel(name: channelName, contents: NSTextStorage(attributedString: formatMessage(contents ?? "")))
+            channels.addObject(channel)
+        }
     }
 
     func formatMessage(message: String) -> NSMutableAttributedString {
@@ -148,8 +145,8 @@ class ChatView: NSView {
     }
 
     func appendMessageToChannel(channelName: String, message: String) {
-        let channel = getChannel(channelName, contents: nil)
-        channel.contents.appendAttributedString(formatMessage(message))
+        setupChannel(channelName, contents: nil)
+        getChannel(channelName)?.contents.appendAttributedString(formatMessage(message))
     }
 
     func appendMessageToActiveChannel(message: String) {
@@ -195,23 +192,24 @@ extension ChatView: IRCDelegate {
         case "JOIN":
             if let channelName = message.params, nick = message.prefix?.nick {
                 appendMessageToChannel(channelName, message: (nick == self.nick ? "You have" : "\(nick) has") + " joined the channel\n")
-                getChannel(channelName, contents: nil).users.insert(User(nick))
+                getChannel(channelName)?.users.insert(User(nick))
                 channels.rearrangeObjects()
             }
         case "PART":
             if let channelName = message.params, nick = message.prefix?.nick {
                 appendMessageToChannel(channelName, message: (nick == self.nick ? "You have" : "\(nick) has") + " left the channel\n")
-                getChannel(channelName, contents: nil).users.remove(User(nick))
+                getChannel(channelName)?.users.remove(User(nick))
                 channels.rearrangeObjects()
             }
         case "353":
             if let matches = "\\S+ [@=*] (\\S+) :?(.*) ?".captures(message.params), channelName = matches.first, nicks = matches.last?.split(" ") {
-                let channel = getChannel(channelName, contents: nil)
-                channel.users.unionInPlace(nicks.map { User($0) })
-                channels.rearrangeObjects()
+                if let channel = getChannel(channelName) {
+                    channel.users.unionInPlace(nicks.map { User($0) })
+                    channels.rearrangeObjects()
+                }
             }
         case "332":
-                if let matches = "\\S+ (\\S+) :?(.*) ?".captures(message.params), channel = matches.first, topic = matches.last {
+            if let matches = "\\S+ (\\S+) :?(.*) ?".captures(message.params), channel = matches.first, topic = matches.last {
                 appendMessageToChannel(channel, message: "\(topic)\n")
             }
         default:
@@ -223,7 +221,6 @@ extension ChatView: IRCDelegate {
 
     func didReceiveStringMessage(message: String) {
         (channels.arrangedObjects as? Array<Channel>)?.forEach { appendMessageToChannel($0.name, message: message) }
-
         scrollIfNeeded()
     }
 

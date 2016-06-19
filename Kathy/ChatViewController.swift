@@ -205,7 +205,7 @@ extension ChatView: IRCDelegate {
                 channels.rearrangeObjects()
             }
         case "353":
-            if let matches = "\\S+ [@=*] (\\S+) :(.*) ?".captures(message.params), channelName = matches.first, nicks = matches.last?.split(" ") {
+            if let matches = "\\S+ [@=*] (\\S+) :?(.*) ?".captures(message.params), channelName = matches.first, nicks = matches.last?.split(" ") {
                 let channel = getChannel(channelName, contents: nil)
                 channel.users.unionInPlace(nicks.map { User($0) })
                 channels.rearrangeObjects()

@@ -43,10 +43,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 extension AppDelegate: NSUserNotificationCenterDelegate {
 
-    func userNotificationCenter(center: NSUserNotificationCenter, shouldPresentNotification notification: NSUserNotification) -> Bool {
-        return true
-    }
-
     func userNotificationCenter(center: NSUserNotificationCenter, didActivateNotification notification: NSUserNotification) {
         ChatWindowController.singleton.showWindow(nil)
     }

@@ -23,9 +23,8 @@ class PreferencesWindowController: NSWindowController {
     }
 
     override func windowDidLoad() {
-        window?.makeKeyAndOrderFront(nil)
-        window?.center()
         contentViewController = PreferencesViewController()
+        window?.center()
     }
 
 }

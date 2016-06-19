@@ -1,0 +1,45 @@
+//
+//  IRCEntities.swift
+//  Kathy
+//
+//  Created by Michael Bujol on 6/19/16.
+//  Copyright © 2016 heptal. All rights reserved.
+//
+
+import Cocoa
+
+class User: NSObject {
+    var name: String = ""
+    var mode: String = ""
+
+    init(_ modeName: String) {
+        if let matches = "([~&@%+]?)(.*)".captures(modeName), modePart = matches.first, namePart = matches.last {
+            name = namePart
+            mode = modePart
+        }
+    }
+
+    override var description: String {
+        return mode + name
+    }
+
+    override var hashValue: Int {
+        return name.hashValue
+    }
+
+    override func isEqual(object: AnyObject?) -> Bool {
+        return (object as? User)?.name == name
+    }
+
+}
+
+class Channel: NSObject {
+    let name: String
+    let contents: NSTextStorage
+    var users: Set<User> = []
+
+    init(name: String, contents: NSTextStorage?) {
+        self.name = name
+        self.contents = contents ?? NSTextStorage()
+    }
+}

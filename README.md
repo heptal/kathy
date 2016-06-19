@@ -6,7 +6,7 @@ This is an IRC client written in Swift.
 
 ## Why?
 
-All the ones out there have one annoyance or another.
+All the ones out there have one annoyance or another, and for fun.
 
 ## Features? 
 
@@ -32,12 +32,12 @@ Install [carthage](https://github.com/Carthage/Carthage) and run `carthage updat
  * Timestamps
  * Message consistency
  * Polish notifications
- * Update userlist on join/leave
  * Multiple simultaneous servers
  * Make preferences better
  * Streamline IRC command parsing/construction
  * Themes?
  * File transfers?
+ * Other protocols? (slack, irccloud)
 
 ## Pics?
 

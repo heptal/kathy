@@ -21,6 +21,7 @@
 		4C57E96A1D0F684B00168EE8 /* TableViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C57E9691D0F684B00168EE8 /* TableViews.swift */; };
 		4C57E96C1D0F68C100168EE8 /* ChatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C57E96B1D0F68C100168EE8 /* ChatInputView.swift */; };
 		4C76344B1D0FEB0E00B524BA /* PreferencesWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C76344A1D0FEB0E00B524BA /* PreferencesWindow.swift */; };
+		4CD6B2351D16FB460040DBBD /* IRCEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD6B2341D16FB460040DBBD /* IRCEntities.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -53,6 +54,7 @@
 		4C57E9691D0F684B00168EE8 /* TableViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViews.swift; sourceTree = "<group>"; };
 		4C57E96B1D0F68C100168EE8 /* ChatInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatInputView.swift; sourceTree = "<group>"; };
 		4C76344A1D0FEB0E00B524BA /* PreferencesWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesWindow.swift; sourceTree = "<group>"; };
+		4CD6B2341D16FB460040DBBD /* IRCEntities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IRCEntities.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,7 @@
 				4C57E95A1D08CA0900168EE8 /* ChatViewController.swift */,
 				4C57E9581D08C9E600168EE8 /* ChatWindowController.swift */,
 				4C57E9631D08CBD000168EE8 /* Helper+Extensions.swift */,
+				4CD6B2341D16FB460040DBBD /* IRCEntities.swift */,
 				4C57E9651D0909D800168EE8 /* IRCMessage.swift */,
 				4C57E95C1D08CA3A00168EE8 /* IRCSession.swift */,
 				4C76344A1D0FEB0E00B524BA /* PreferencesWindow.swift */,
@@ -185,6 +188,7 @@
 			files = (
 				4C57E96A1D0F684B00168EE8 /* TableViews.swift in Sources */,
 				4C57E95D1D08CA3A00168EE8 /* IRCSession.swift in Sources */,
+				4CD6B2351D16FB460040DBBD /* IRCEntities.swift in Sources */,
 				4C57E94C1D08C81D00168EE8 /* AppDelegate.swift in Sources */,
 				4C57E95B1D08CA0900168EE8 /* ChatViewController.swift in Sources */,
 				4C57E9591D08C9E600168EE8 /* ChatWindowController.swift in Sources */,

@@ -8,17 +8,6 @@
 
 import Cocoa
 
-class Channel: NSObject {
-    let name: String
-    let contents: NSTextStorage
-    var users: Set<String> = []
-
-    init(name: String, contents: NSTextStorage?) {
-        self.name = name
-        self.contents = contents ?? NSTextStorage()
-    }
-}
-
 class ChatViewController: NSViewController {
 
     override func loadView() {
@@ -82,13 +71,12 @@ class ChatView: NSView {
         let channelTableView = channelView.subviewWithIdentifier("channelView") as? NSTableView
         channelTableView?.bind("content", toObject: channels, withKeyPath: "arrangedObjects.name", options: nil)
         channelTableView?.bind("selectionIndexes", toObject: channels, withKeyPath: "selectionIndexes", options: nil)
-
         let users = NSArrayController()
         users.bind("contentSet", toObject: channels, withKeyPath: "selection.users", options: nil)
-        users.sortDescriptors = [NSSortDescriptor(key: nil, ascending: true) { ($0 as! String).compare($1 as! String, options: .CaseInsensitiveSearch) }]
+        users.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))]
         users.automaticallyRearrangesObjects = true
         let userTableView = userView.subviewWithIdentifier("userView") as? NSTableView
-        userTableView?.bind("content", toObject: users, withKeyPath: "arrangedObjects", options: nil)
+        userTableView?.bind("content", toObject: users, withKeyPath: "arrangedObjects.description", options: nil)
 
         // Start it all up
         resetHistoryIndex()
@@ -192,10 +180,6 @@ extension ChatView: IRCDelegate {
                     nick = newNick
                 }
             }
-        case "JOIN":
-            if let channel = message.params {
-                getChannel(channel, contents: nil)
-            }
         case "PRIVMSG":
             if let nick = message.prefix?.nick, matches = "(\\S+) :?(.*)".captures(message.params), text = matches.last, var channel = matches.first {
                 if channel == self.nick {
@@ -206,12 +190,24 @@ extension ChatView: IRCDelegate {
                     notification.informativeText = text
                     NSUserNotificationCenter.defaultUserNotificationCenter().deliverNotification(notification)
                 }
-                appendMessageToChannel(channel, message: "\(message.prefix?.nick ?? ""): \(text)\n")
+                appendMessageToChannel(channel, message: "\(nick): \(text)\n")
+            }
+        case "JOIN":
+            if let channelName = message.params, nick = message.prefix?.nick {
+                appendMessageToChannel(channelName, message: (nick == self.nick ? "You have" : "\(nick) has") + " joined the channel\n")
+                getChannel(channelName, contents: nil).users.insert(User(nick))
+                channels.rearrangeObjects()
+            }
+        case "PART":
+            if let channelName = message.params, nick = message.prefix?.nick {
+                appendMessageToChannel(channelName, message: (nick == self.nick ? "You have" : "\(nick) has") + " left the channel\n")
+                getChannel(channelName, contents: nil).users.remove(User(nick))
+                channels.rearrangeObjects()
             }
         case "353":
             if let matches = "\\S+ [@=*] (\\S+) :(.*) ?".captures(message.params), channelName = matches.first, nicks = matches.last?.split(" ") {
                 let channel = getChannel(channelName, contents: nil)
-                channel.users.unionInPlace(nicks)
+                channel.users.unionInPlace(nicks.map { User($0) })
                 channels.rearrangeObjects()
             }
         case "332":

@@ -80,3 +80,32 @@ struct IRCMessagePrefix: CustomStringConvertible {
         return "\(raw)\nhost:\(host)\nnick:\(nick ?? nil)\nuser:\(user ?? nil)"
     }
 }
+
+extension IRCMessage {
+
+    func log() {
+        let fm = NSFileManager.defaultManager()
+
+        if let supportDir = try? fm.URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true) {
+            let appSupportDir = supportDir.URLByAppendingPathComponent("/Kathy")
+            if let appSupportDirPath = appSupportDir.path {
+                if !fm.fileExistsAtPath(appSupportDirPath) {
+                    let _ = try? fm.createDirectoryAtURL(appSupportDir, withIntermediateDirectories: true, attributes: nil)
+                }
+
+                let logFile = appSupportDirPath + "/log.txt"
+
+                if !fm.fileExistsAtPath(logFile) {
+                    fm.createFileAtPath(logFile, contents: nil, attributes: nil)
+                }
+
+                if let fh = NSFileHandle(forUpdatingAtPath: logFile) {
+                    fh.seekToEndOfFile()
+                    fh.writeData(self.data)
+                    fh.closeFile()
+                }
+            }
+        }
+    }
+
+}

@@ -41,7 +41,7 @@ extension ChatView: NSTextFieldDelegate {
     }
 
     func control(control: NSControl, textView: NSTextView, completions words: [String], forPartialWordRange charRange: NSRange, indexOfSelectedItem index: UnsafeMutablePointer<Int>) -> [String] {
-        return (channels.selectedObjects.first as? Channel)?.users
+        return (session.channels.selectedObjects.first as? Channel)?.users
             .map { return $0.name + ": " }
             .filter { $0.hasPrefix(control.stringValue) } ?? []
     }
@@ -55,12 +55,17 @@ extension ChatView: NSTextFieldDelegate {
         if text.hasPrefix("/") {
             session?.command(text)
         } else {
-            if let channel = channels.selectedObjects.first as? Channel {
-                if channel != console {
+            if let channel = session.channels.selectedObjects.first as? Channel {
+                if channel.name != session.consoleChannelName {
                     session?.command("/PRIVMSG \(channel.name) :\(text)")
-                    appendMessageToActiveChannel("\(nick): \(text)\n")
+                    let message = "\(session.currentNick): \(text)\n"
+                    channel.log.append(message)
+                    appendMessageToActiveChannel(message)
+
                 } else {
-                    appendMessageToActiveChannel("\(text)\n")
+                    let message = text + "\n"
+                    channel.log.append(message)
+                    appendMessageToActiveChannel(message)
                 }
             }
         }
@@ -72,6 +77,7 @@ extension ChatView: NSTextFieldDelegate {
             history.append(text)
             userDefaults.setObject(history, forKey: "history")
         }
+
         resetHistoryIndex()
     }
 

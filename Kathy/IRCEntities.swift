@@ -8,6 +8,17 @@
 
 import Cocoa
 
+class Channel: NSObject {
+    let name: String
+    var log: [String] = []
+    var users: Set<User> = []
+
+    init(name: String) {
+        self.name = name
+    }
+
+}
+
 class User: NSObject {
     var name: String = ""
     var mode: String = ""
@@ -31,15 +42,4 @@ class User: NSObject {
         return (object as? User)?.name == name
     }
 
-}
-
-class Channel: NSObject {
-    let name: String
-    let contents: NSTextStorage
-    var users: Set<User> = []
-
-    init(name: String, contents: NSTextStorage?) {
-        self.name = name
-        self.contents = contents ?? NSTextStorage()
-    }
 }

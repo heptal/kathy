@@ -6,13 +6,15 @@
 //  Copyright © 2016 heptal. All rights reserved.
 //
 
+import Cocoa
 import CocoaAsyncSocket.GCDAsyncSocket
 
 protocol IRCDelegate: class {
 
-    func didReceiveIRCMessage(message: IRCMessage)
-    func didReceiveStringMessage(message: String)
+    func didReceiveBroadcast(message: String)
+    func didReceiveMessage(message: String)
     func didReceiveError(error: NSError)
+
 }
 
 class IRCSession: NSObject {
@@ -21,6 +23,10 @@ class IRCSession: NSObject {
     let readTimeout = -1.0
     let writeTimeout = 30.0
     let tag = -1
+
+    var currentNick: String!
+    let channels = NSArrayController()
+    let consoleChannelName = "Server Console"
     unowned let delegate: IRCDelegate
 
     init(delegate: IRCDelegate) {
@@ -30,6 +36,11 @@ class IRCSession: NSObject {
         let delegateQueue = dispatch_queue_create("com.heptal.Kathy.tcpQueue", nil)
         socket = GCDAsyncSocket(delegate: self, delegateQueue: delegateQueue)
         socket.IPv4PreferredOverIPv6 = false
+
+        currentNick =  NSUserDefaults.standardUserDefaults().stringForKey("nick")
+
+        channels.selectsInsertedObjects = true
+        channels.addObject(Channel(name: consoleChannelName))
     }
 
     func readSocket() {
@@ -91,48 +102,34 @@ class IRCSession: NSObject {
         }
     }
 
-}
-
-extension IRCSession: GCDAsyncSocketDelegate {
-
-    func socket(sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
-        print("didConnectToHost")
-        dispatch_async(dispatch_get_main_queue()) {
-            self.delegate.didReceiveStringMessage("Connected to \(host):\(port)\n")
-            self.authenticate()
-        }
+    func getChannel(channelName: String) -> Channel? {
+        return (channels.arrangedObjects as? Array<Channel>)?.filter { channelName == $0.name }.first
     }
 
-    func socketDidSecure(sock: GCDAsyncSocket!) {
-        print("socketDidSecure")
-        dispatch_async(dispatch_get_main_queue()) {
-            self.delegate.didReceiveStringMessage("Connection secured\n\n")
+    func setupChannel(channelName: String) -> Channel? {
+        if getChannel(channelName) == nil {
+            let channel = Channel(name: channelName)
+            if NSThread.isMainThread() {
+                channels.addObject(channel)
+            } else {
+                dispatch_sync(dispatch_get_main_queue()) {
+                    self.channels.addObject(channel)
+                }
+            }
         }
+        return getChannel(channelName)
     }
 
-    func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
-        print("socketDidDisconnect")
-        dispatch_async(dispatch_get_main_queue()) {
-            self.delegate.didReceiveStringMessage(err.localizedDescription + "\n")
-        }
-    }
-
-    func socket(sock: GCDAsyncSocket!, didWriteDataWithTag tag: Int) {
-        print("didWriteData")
-    }
-
-    func socket(sock: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
-        print("didReadData")
-        readSocket()
-
-        let message = IRCMessage(data: data)
-        if message.command == "PING" {
-            sendIRCMessage(IRCMessage(command: "PONG", params: message.params))
-            return
-        }
-
-        dispatch_async(dispatch_get_main_queue()) {
-            self.delegate.didReceiveIRCMessage(message)
+    func appendMessageToChannel(channelName: String, message: String) {
+        if let channel = setupChannel(channelName) {
+            channel.log.append(message)
+            if let currentChannel = channels.selectedObjects.first as? Channel {
+                if currentChannel.name == channel.name {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.delegate.didReceiveMessage(message)
+                    }
+                }
+            }
         }
     }
 

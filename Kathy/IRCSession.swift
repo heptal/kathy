@@ -13,6 +13,7 @@ protocol IRCDelegate: class {
 
     func didReceiveBroadcast(message: String)
     func didReceiveMessage(message: String)
+    func didReceiveUnreadMessageOnChannel(channel: String)
     func didReceiveError(error: NSError)
 
 }
@@ -39,7 +40,6 @@ class IRCSession: NSObject {
 
         currentNick =  NSUserDefaults.standardUserDefaults().stringForKey("nick")
 
-        channels.selectsInsertedObjects = true
         channels.addObject(Channel(name: consoleChannelName))
     }
 
@@ -124,9 +124,13 @@ class IRCSession: NSObject {
         if let channel = setupChannel(channelName) {
             channel.log.append(message)
             if let currentChannel = channels.selectedObjects.first as? Channel {
-                if currentChannel.name == channel.name {
+                if channel.name == currentChannel.name {
                     dispatch_async(dispatch_get_main_queue()) {
                         self.delegate.didReceiveMessage(message)
+                    }
+                } else if channel.name != consoleChannelName {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.delegate.didReceiveUnreadMessageOnChannel(channelName)
                     }
                 }
             }

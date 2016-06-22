@@ -21,6 +21,8 @@ class ChatView: NSView {
 
     var session: IRCSession!
     var textView: NSTextView!
+    var channelTableView: NSTableView!
+    var userTableView: NSTableView!
     var historyIndex: Int!
 
     let detector = try! NSDataDetector(types: NSTextCheckingType.Link.rawValue)
@@ -66,19 +68,19 @@ class ChatView: NSView {
 
         // Start it all up
         resetHistoryIndex()
-        textView = chatTextView.subviewWithIdentifier("chatView") as? NSTextView
         session = IRCSession(delegate: self)
+        textView = chatTextView.subviewWithIdentifier("chatView") as? NSTextView
+        channelTableView = channelView.subviewWithIdentifier("channelTableView") as? NSTableView
+        userTableView = userView.subviewWithIdentifier("userTableView") as? NSTableView
 
         // Bind table views
-        let channelTableView = channelView.subviewWithIdentifier("channelView") as? NSTableView
-        channelTableView?.bind("content", toObject: session.channels, withKeyPath: "arrangedObjects.name", options: nil)
-        channelTableView?.bind("selectionIndexes", toObject: session.channels, withKeyPath: "selectionIndexes", options: nil)
         let users = NSArrayController()
         users.bind("contentSet", toObject: session.channels, withKeyPath: "selection.users", options: nil)
         users.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))]
-        let userTableView = userView.subviewWithIdentifier("userView") as? NSTableView
-        userTableView?.bind("content", toObject: users, withKeyPath: "arrangedObjects.description", options: nil)
-        userTableView?.doubleAction = #selector(didDoubleClickUser)
+        channelTableView.bind("content", toObject: session.channels, withKeyPath: "arrangedObjects.name", options: nil)
+        channelTableView.bind("selectionIndexes", toObject: session.channels, withKeyPath: "selectionIndexes", options: nil)
+        userTableView.bind("content", toObject: users, withKeyPath: "arrangedObjects.description", options: nil)
+        userTableView.doubleAction = #selector(didDoubleClickUser)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(didSelectChannel), name: NSTableViewSelectionDidChangeNotification, object: nil)
 
         // Connect
@@ -94,19 +96,26 @@ class ChatView: NSView {
     }
 
     func didDoubleClickUser(tableView: NSTableView) {
-        if let row = tableView.rowViewAtRow(tableView.selectedRow, makeIfNecessary: false)?.viewAtColumn(tableView.clickedColumn) as? NSTextField {
-            if let userChannel = session.setupChannel(User(row.stringValue).name) {
+        if let userRow = tableView.viewAtColumn(0, row: tableView.selectedRow, makeIfNecessary: false) as? NSTextField {
+            if let userChannel = session.setupChannel(User(userRow.stringValue).name) {
                 session.channels.setSelectedObjects([userChannel])
             }
         }
     }
 
-    func didSelectChannel(notification: AnyObject?) {
+    func didSelectChannel(notification: NSNotification?) {
+        if let tableView = notification?.object as? NSTableView {
+            if tableView == channelTableView {
+                if let channelRow = tableView.viewAtColumn(0, row: tableView.selectedRow, makeIfNecessary: false) as? NSTextField {
+                    channelRow.textColor = NSColor.blackColor()
+                }
+            }
+        }
+
         if let channel = session.channels.selectedObjects.first as? Channel {
             window?.title = channel.name
             textView.layoutManager?.replaceTextStorage(NSTextStorage(attributedString: formatMessage(channel.log.joinWithSeparator(""))))
             textView.scrollToEndOfDocument(nil)
-
         }
     }
 
@@ -159,6 +168,16 @@ extension ChatView: IRCDelegate {
 
     func didReceiveMessage(message: String) {
         appendMessageToActiveChannel(message)
+    }
+
+    func didReceiveUnreadMessageOnChannel(channel: String) {
+        channelTableView.enumerateAvailableRowViewsUsingBlock { (rowView, row) in
+            if let channelRow = rowView.viewAtColumn(0) as? NSTextField {
+                if channelRow.stringValue == channel {
+                    channelRow.textColor = NSColor.orangeColor()
+                }
+            }
+        }
     }
 
     func didReceiveError(error: NSError) {

@@ -15,7 +15,7 @@ class ChannelView: NSScrollView, NSTableViewDelegate {
         super.init(frame: frameRect)
 
         let tableView = NSTableView()
-        tableView.identifier = "channelView"
+        tableView.identifier = "channelTableView"
         tableView.allowsEmptySelection = false
         tableView.allowsMultipleSelection = false
         tableView.addTableColumn(NSTableColumn())
@@ -29,11 +29,16 @@ class ChannelView: NSScrollView, NSTableViewDelegate {
     }
 
     func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        let textField = NSTextField()
-        textField.bordered = false
-        textField.drawsBackground = false
-        textField.editable = false
-        textField.bind("value", toObject: textField, withKeyPath: "objectValue", options: nil)
+        let identifier = "channel"
+
+        guard let textField = tableView.makeViewWithIdentifier(identifier, owner: self) else {
+            let textField = NSTextField()
+            textField.identifier = identifier
+            textField.bordered = false
+            textField.drawsBackground = false
+            textField.editable = false
+            return textField
+        }
 
         return textField
     }
@@ -46,8 +51,7 @@ class UserView: NSScrollView, NSTableViewDelegate {
         super.init(frame: frameRect)
 
         let tableView = NSTableView()
-        tableView.identifier = "userView"
-        tableView.allowsEmptySelection = false
+        tableView.identifier = "userTableView"
         tableView.allowsMultipleSelection = false
         tableView.addTableColumn(NSTableColumn())
         tableView.headerView = nil
@@ -60,11 +64,16 @@ class UserView: NSScrollView, NSTableViewDelegate {
     }
 
     func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        let textField = NSTextField()
-        textField.bordered = false
-        textField.drawsBackground = false
-        textField.editable = false
-        textField.bind("value", toObject: textField, withKeyPath: "objectValue", options: nil)
+        let identifier = "user"
+
+        guard let textField = tableView.makeViewWithIdentifier(identifier, owner: self) else {
+            let textField = NSTextField()
+            textField.identifier = identifier
+            textField.bordered = false
+            textField.drawsBackground = false
+            textField.editable = false
+            return textField
+        }
 
         return textField
     }

@@ -15,9 +15,9 @@ class ChatWindowController: NSWindowController {
     override var windowNibName: String? { return "ChatWindow" }
 
     override func loadWindow() {
-        let rect = CGRectZero
-        let style = NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask
-        window = NSWindow(contentRect: rect, styleMask: style, backing: .Buffered, defer: true)
+        let rect = CGRect.zero
+        let style: NSWindowStyleMask = [.titled, .resizable, .miniaturizable, .closable] //NSTitledWindowMask | NSResizableWindowMask | NSMiniaturizableWindowMask | NSClosableWindowMask
+        window = NSWindow(contentRect: rect, styleMask: style, backing: .buffered, defer: true)
         windowFrameAutosaveName = windowNibName
     }
 

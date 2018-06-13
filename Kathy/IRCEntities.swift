@@ -24,7 +24,7 @@ class User: NSObject {
     var mode: String = ""
 
     init(_ modeName: String) {
-        if let matches = "([~&@%+]?)(.*)".captures(modeName), modePart = matches.first, namePart = matches.last {
+        if let matches = "([~&@%+]?)(.*)".captures(modeName), let modePart = matches.first, let namePart = matches.last {
             name = namePart
             mode = modePart
         }
@@ -38,7 +38,7 @@ class User: NSObject {
         return name.hashValue
     }
 
-    override func isEqual(object: AnyObject?) -> Bool {
+    override func isEqual(_ object: Any?) -> Bool {
         return (object as? User)?.name == name
     }
 

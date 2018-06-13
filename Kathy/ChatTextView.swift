@@ -14,10 +14,10 @@ class ChatTextView: NSScrollView {
         super.init(frame: frameRect)
 
         let textView = NSTextView()
-        textView.autoresizingMask = [.ViewWidthSizable, .ViewHeightSizable]
+        textView.autoresizingMask = [.viewWidthSizable, .viewHeightSizable]
         textView.identifier = "chatView"
-        textView.editable = false
-        textView.selectable = true
+        textView.isEditable = false
+        textView.isSelectable = true
         textView.displaysLinkToolTips = true
         documentView = textView
 

@@ -20,7 +20,7 @@ class ChannelView: NSScrollView, NSTableViewDelegate {
         tableView.allowsMultipleSelection = false
         tableView.addTableColumn(NSTableColumn())
         tableView.headerView = nil
-        tableView.setDelegate(self)
+        tableView.delegate = self
         documentView = tableView
     }
 
@@ -28,15 +28,15 @@ class ChannelView: NSScrollView, NSTableViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let identifier = "channel"
 
-        guard let textField = tableView.makeViewWithIdentifier(identifier, owner: self) else {
+        guard let textField = tableView.make(withIdentifier: identifier, owner: self) else {
             let textField = NSTextField()
             textField.identifier = identifier
-            textField.bordered = false
+            textField.isBordered = false
             textField.drawsBackground = false
-            textField.editable = false
+            textField.isEditable = false
             return textField
         }
 
@@ -55,7 +55,7 @@ class UserView: NSScrollView, NSTableViewDelegate {
         tableView.allowsMultipleSelection = false
         tableView.addTableColumn(NSTableColumn())
         tableView.headerView = nil
-        tableView.setDelegate(self)
+        tableView.delegate = self
         documentView = tableView
     }
 
@@ -63,15 +63,15 @@ class UserView: NSScrollView, NSTableViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let identifier = "user"
 
-        guard let textField = tableView.makeViewWithIdentifier(identifier, owner: self) else {
+        guard let textField = tableView.make(withIdentifier: identifier, owner: self) else {
             let textField = NSTextField()
             textField.identifier = identifier
-            textField.bordered = false
+            textField.isBordered = false
             textField.drawsBackground = false
-            textField.editable = false
+            textField.isEditable = false
             return textField
         }
 

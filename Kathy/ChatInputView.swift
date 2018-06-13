@@ -11,13 +11,13 @@ import Cocoa
 extension ChatView: NSTextFieldDelegate {
 
     func resetHistoryIndex() {
-        if let history = userDefaults.arrayForKey("history") as? [String] {
+        if let history = userDefaults.array(forKey: "history") as? [String] {
             historyIndex = history.count - 1
         }
     }
 
-    func control(control: NSControl, textView: NSTextView, doCommandBySelector commandSelector: Selector) -> Bool {
-        if let history = userDefaults.arrayForKey("history") as? [String] {
+    func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+        if let history = userDefaults.array(forKey: "history") as? [String] {
             if commandSelector == #selector(moveUp) {
                 control.stringValue = history[historyIndex]
                 historyIndex = max(historyIndex - 1, 0)
@@ -40,15 +40,15 @@ extension ChatView: NSTextFieldDelegate {
         return false
     }
 
-    func control(control: NSControl, textView: NSTextView, completions words: [String], forPartialWordRange charRange: NSRange, indexOfSelectedItem index: UnsafeMutablePointer<Int>) -> [String] {
+    func control(_ control: NSControl, textView: NSTextView, completions words: [String], forPartialWordRange charRange: NSRange, indexOfSelectedItem index: UnsafeMutablePointer<Int>) -> [String] {
         return (session.channels.selectedObjects.first as? Channel)?.users
             .map { return $0.name + ": " }
             .filter { $0.hasPrefix(control.stringValue) } ?? []
     }
 
-    override func controlTextDidEndEditing(obj: NSNotification) {
+    override func controlTextDidEndEditing(_ obj: Notification) {
         guard let inputField = obj.object as? NSTextField else { return }
-        guard inputField.stringValue.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()) != "" else { return }
+        guard inputField.stringValue.trimmingCharacters(in: .whitespaces) != "" else { return }
         defer { inputField.stringValue = "" }
 
         let text = inputField.stringValue
@@ -70,12 +70,12 @@ extension ChatView: NSTextFieldDelegate {
             }
         }
 
-        if var history = userDefaults.arrayForKey("history") as? [String] {
-            if let index = history.indexOf(text) {
-                history.removeAtIndex(index)
+        if var history = userDefaults.array(forKey: "history") as? [String] {
+            if let index = history.index(of: text) {
+                history.remove(at: index)
             }
             history.append(text)
-            userDefaults.setObject(history, forKey: "history")
+            userDefaults.set(history, forKey: "history")
         }
 
         resetHistoryIndex()

@@ -12,7 +12,7 @@ class ChatViewController: NSViewController {
 
     override func loadView() {
         let size = CGSize(width: 1024, height: 768)
-        view = ChatView(frame: CGRect(origin: CGPointZero, size: size))
+        view = ChatView(frame: CGRect(origin: CGPoint.zero, size: size))
     }
 
 }
@@ -25,35 +25,35 @@ class ChatView: NSView {
     var userTableView: NSTableView!
     var historyIndex: Int!
 
-    let detector = try! NSDataDetector(types: NSTextCheckingType.Link.rawValue)
-    let userDefaults = NSUserDefaults.standardUserDefaults()
+    let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+    let userDefaults = UserDefaults.standard
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
 
         // Build the interface
         let mainSplitView = NSSplitView(frame: frameRect)
-        mainSplitView.autoresizingMask = [.ViewWidthSizable, .ViewHeightSizable]
+        mainSplitView.autoresizingMask = [.viewWidthSizable, .viewHeightSizable]
         mainSplitView.translatesAutoresizingMaskIntoConstraints = true
         mainSplitView.autoresizesSubviews = true
-        mainSplitView.vertical = true
-        mainSplitView.dividerStyle = .Thin
+        mainSplitView.isVertical = true
+        mainSplitView.dividerStyle = .thin
         addSubview(mainSplitView)
 
         let stackView = NSStackView()
-        stackView.orientation = .Vertical
+        stackView.orientation = .vertical
         mainSplitView.addSubview(stackView)
 
         let chatTextView = ChatTextView()
-        stackView.addView(chatTextView, inGravity: .Top)
+        stackView.addView(chatTextView, in: .top)
 
         let inputView = NSTextField()
         inputView.identifier = "inputView"
         inputView.delegate = self
-        stackView.addView(inputView, inGravity: .Top)
+        stackView.addView(inputView, in: .top)
 
         let sideSplitView = NSSplitView(frame: frameRect)
-        sideSplitView.vertical = false
+        sideSplitView.isVertical = false
         mainSplitView.addSubview(sideSplitView)
 
         let channelView = ChannelView()
@@ -62,9 +62,9 @@ class ChatView: NSView {
         let userView = UserView()
         sideSplitView.addSubview(userView)
 
-        NSLayoutConstraint.soloConstraint(sideSplitView, attr: .Width, relation: .LessThanOrEqual, amount: 200).active = true
-        NSLayoutConstraint.soloConstraint(sideSplitView, attr: .Width, relation: .GreaterThanOrEqual, amount: 100).active = true
-        NSLayoutConstraint.soloConstraint(channelView, attr: .Height, relation: .GreaterThanOrEqual, amount: 100).active = true
+        NSLayoutConstraint.soloConstraint(sideSplitView, attr: .width, relation: .lessThanOrEqual, amount: 200).isActive = true
+        NSLayoutConstraint.soloConstraint(sideSplitView, attr: .width, relation: .greaterThanOrEqual, amount: 100).isActive = true
+        NSLayoutConstraint.soloConstraint(channelView, attr: .height, relation: .greaterThanOrEqual, amount: 100).isActive = true
 
         // Start it all up
         resetHistoryIndex()
@@ -75,17 +75,17 @@ class ChatView: NSView {
 
         // Bind table views
         let users = NSArrayController()
-        users.bind("contentSet", toObject: session.channels, withKeyPath: "selection.users", options: nil)
+        users.bind("contentSet", to: session.channels, withKeyPath: "selection.users", options: nil)
         users.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))]
-        channelTableView.bind("content", toObject: session.channels, withKeyPath: "arrangedObjects.name", options: nil)
-        channelTableView.bind("selectionIndexes", toObject: session.channels, withKeyPath: "selectionIndexes", options: nil)
-        userTableView.bind("content", toObject: users, withKeyPath: "arrangedObjects.description", options: nil)
+        channelTableView.bind("content", to: session.channels, withKeyPath: "arrangedObjects.name", options: nil)
+        channelTableView.bind("selectionIndexes", to: session.channels, withKeyPath: "selectionIndexes", options: nil)
+        userTableView.bind("content", to: users, withKeyPath: "arrangedObjects.description", options: nil)
         userTableView.doubleAction = #selector(didDoubleClickUser)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(didSelectChannel), name: NSTableViewSelectionDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didSelectChannel), name: NSNotification.Name.NSTableViewSelectionDidChange, object: nil)
 
         // Connect
-        if let host = userDefaults.stringForKey("defaultHost") {
-            if userDefaults.boolForKey("autoConnect") {
+        if let host = userDefaults.string(forKey: "defaultHost") {
+            if userDefaults.bool(forKey: "autoConnect") {
                 session?.command("/server \(host)")
             }
         }
@@ -95,32 +95,32 @@ class ChatView: NSView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func didDoubleClickUser(tableView: NSTableView) {
-        if let userRow = tableView.viewAtColumn(0, row: tableView.selectedRow, makeIfNecessary: false) as? NSTextField {
+    func didDoubleClickUser(_ tableView: NSTableView) {
+        if let userRow = tableView.view(atColumn: 0, row: tableView.selectedRow, makeIfNecessary: false) as? NSTextField {
             if let userChannel = session.setupChannel(User(userRow.stringValue).name) {
                 session.channels.setSelectedObjects([userChannel])
             }
         }
     }
 
-    func didSelectChannel(notification: NSNotification?) {
+    func didSelectChannel(_ notification: Notification?) {
         if let tableView = notification?.object as? NSTableView {
             if tableView == channelTableView {
-                if let channelRow = tableView.viewAtColumn(0, row: tableView.selectedRow, makeIfNecessary: false) as? NSTextField {
-                    channelRow.textColor = NSColor.blackColor()
+                if let channelRow = tableView.view(atColumn: 0, row: tableView.selectedRow, makeIfNecessary: false) as? NSTextField {
+                    channelRow.textColor = NSColor.black
                 }
             }
         }
 
         if let channel = session.channels.selectedObjects.first as? Channel {
             window?.title = channel.name
-            textView.layoutManager?.replaceTextStorage(NSTextStorage(attributedString: formatMessage(channel.log.joinWithSeparator(""))))
+            textView.layoutManager?.replaceTextStorage(NSTextStorage(attributedString: formatMessage(channel.log.joined(separator: ""))))
             textView.scrollToEndOfDocument(nil)
         }
     }
 
-    func appendMessageToActiveChannel(message: String) {
-        textView.textStorage?.appendAttributedString(formatMessage(message))
+    func appendMessageToActiveChannel(_ message: String) {
+        textView.textStorage?.append(formatMessage(message))
         scrollIfNeeded()
     }
 
@@ -133,23 +133,24 @@ class ChatView: NSView {
         }
     }
 
-    func formatMessage(message: String) -> NSMutableAttributedString {
-        let color = NSColor.blackColor()
+    func formatMessage(_ message: String) -> NSMutableAttributedString {
+        let color = NSColor.black
         let font = NSFont(name: "Menlo", size: 12)!
         let textAttributes = [NSForegroundColorAttributeName: color, NSFontAttributeName: font]
         let attributedText = NSMutableAttributedString(string: message, attributes: textAttributes)
 
-        detector.matchesInString(message, options: [], range: NSMakeRange(0, (message as NSString).length)).forEach { (urlMatch) in
-            if let url = urlMatch.URL, ext = url.pathExtension {
+        detector.matches(in: message, options: [], range: NSMakeRange(0, (message as NSString).length)).forEach { (urlMatch) in
+            if let url = urlMatch.url {
+                let ext = url.pathExtension
                 attributedText.addAttribute(NSLinkAttributeName, value: url, range: urlMatch.range)
 
-                if "jpgjpegpnggif".containsString(ext) {
-                    let attachmentCell = NSTextAttachmentCell(imageCell: NSImage(contentsOfURL: url))
+                if "jpgjpegpnggif".contains(ext) {
+                    let attachmentCell = NSTextAttachmentCell(imageCell: NSImage(contentsOf: url))
                     let attachment = NSTextAttachment()
                     attachment.attachmentCell = attachmentCell
-                    attributedText.appendAttributedString(NSAttributedString(string: "\n"))
-                    attributedText.appendAttributedString(NSAttributedString(attachment: attachment))
-                    attributedText.appendAttributedString(NSAttributedString(string: "\n\n"))
+                    attributedText.append(NSAttributedString(string: "\n"))
+                    attributedText.append(NSAttributedString(attachment: attachment))
+                    attributedText.append(NSAttributedString(string: "\n\n"))
                 }
             }
         }
@@ -161,26 +162,26 @@ class ChatView: NSView {
 
 extension ChatView: IRCDelegate {
 
-    func didReceiveBroadcast(message: String) {
+    func didReceiveBroadcast(_ message: String) {
         (session.channels.arrangedObjects as? Array<Channel>)?.forEach { $0.log.append(message) }
         appendMessageToActiveChannel(message)
     }
 
-    func didReceiveMessage(message: String) {
+    func didReceiveMessage(_ message: String) {
         appendMessageToActiveChannel(message)
     }
 
-    func didReceiveUnreadMessageOnChannel(channel: String) {
-        channelTableView.enumerateAvailableRowViewsUsingBlock { (rowView, row) in
-            if let channelRow = rowView.viewAtColumn(0) as? NSTextField {
+    func didReceiveUnreadMessageOnChannel(_ channel: String) {
+        channelTableView.enumerateAvailableRowViews { (rowView, row) in
+            if let channelRow = rowView.view(atColumn: 0) as? NSTextField {
                 if channelRow.stringValue == channel {
-                    channelRow.textColor = NSColor.orangeColor()
+                    channelRow.textColor = NSColor.orange
                 }
             }
         }
     }
 
-    func didReceiveError(error: NSError) {
+    func didReceiveError(_ error: NSError) {
         NSAlert(error: error).runModal()
     }
 

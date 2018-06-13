@@ -14,24 +14,24 @@ struct IRCMessage: CustomStringConvertible {
     let params: String?
     let raw: String!
 
-    var data: NSData! {
-        return raw.dataUsingEncoding(NSUTF8StringEncoding)
+    var data: Data! {
+        return raw.data(using: String.Encoding.utf8)
     }
 
-    init(data: NSData) {
-        raw = String(data: data, encoding: NSUTF8StringEncoding)
-        var message = raw.stringByReplacingOccurrencesOfString("\r\n", withString: "", options: [.AnchoredSearch, .BackwardsSearch], range: nil)
-
-        let prefixEnd = message.characters.indexOf(" ")
+    init(data: Data) {
+        raw = String(data: data, encoding: String.Encoding.utf8)
+        var message = raw.replacingOccurrences(of: "\r\n", with: "", options: [.anchored, .backwards], range: nil)
         var messagePrefix: IRCMessagePrefix?
-        if message.hasPrefix(":") && prefixEnd != nil {
-            messagePrefix = IRCMessagePrefix(prefix: message.substringToIndex(prefixEnd!))
-            message = message.substringFromIndex(prefixEnd!.successor())
+        if let prefixEnd = message.characters.index(of: " ") {
+            if message.hasPrefix(":") {
+                messagePrefix = IRCMessagePrefix(prefix: message.substring(to: prefixEnd))
+                message = message.substring(from: message.index(after: prefixEnd))
+            }
         }
 
-        if let index = message.characters.indexOf(" ") {
-            command = message.substringToIndex(index)
-            params = message.substringFromIndex(index.successor())
+        if let index = message.characters.index(of: " ") {
+            command = message.substring(to: index)
+            params = message.substring(from: message.index(after: index))
         } else {
             command = message
             params = nil
@@ -41,7 +41,7 @@ struct IRCMessage: CustomStringConvertible {
     }
 
     init(command cmd: String, params parameters: String?) {
-        command = cmd.uppercaseString
+        command = cmd.uppercased()
         params = parameters
         prefix = nil
         raw = command + (params != nil ? " \(params!)" : "") + "\r\n"
@@ -55,24 +55,24 @@ struct IRCMessage: CustomStringConvertible {
 struct IRCMessagePrefix: CustomStringConvertible {
     let nick: String?
     let user: String?
-    let host: NSURL!
+    let host: URL!
     let raw: String!
 
     init?(prefix: String) {
-        guard var index = prefix.characters.indexOf(":") else {
+        guard var index = prefix.characters.index(of: ":") else {
             return nil
         }
 
-        if let nickEnd = prefix.characters.indexOf("!"), userEnd = prefix.characters.indexOf("@") {
-            nick = prefix[index.successor()..<nickEnd]
-            user = prefix[nickEnd.successor()..<userEnd]
+        if let nickEnd = prefix.characters.index(of: "!"), let userEnd = prefix.characters.index(of: "@") {
+            nick = prefix[prefix.index(after: index)..<nickEnd]
+            user = prefix[prefix.index(after: nickEnd)..<userEnd]
             index = userEnd
         } else {
             nick = nil
             user = nil
         }
 
-        host = NSURL(string: prefix.substringFromIndex(index.successor()))
+        host = URL(string: prefix.substring(from: prefix.index(after: index)))
         raw = prefix
     }
 
@@ -84,27 +84,27 @@ struct IRCMessagePrefix: CustomStringConvertible {
 extension IRCMessage {
 
     func log() {
-        let fm = NSFileManager.defaultManager()
+        let fm = FileManager.default
 
-        if let supportDir = try? fm.URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true) {
-            let appSupportDir = supportDir.URLByAppendingPathComponent("/Kathy")
-            if let appSupportDirPath = appSupportDir.path {
-                if !fm.fileExistsAtPath(appSupportDirPath) {
-                    let _ = try? fm.createDirectoryAtURL(appSupportDir, withIntermediateDirectories: true, attributes: nil)
+        if let supportDir = try? fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true) {
+            let appSupportDir = supportDir.appendingPathComponent("/Kathy")
+//            if let appSupportDirPath = appSupportDir.path {
+                if !fm.fileExists(atPath: appSupportDir.path) {
+                    let _ = try? fm.createDirectory(at: appSupportDir, withIntermediateDirectories: true, attributes: nil)
                 }
 
-                let logFile = appSupportDirPath + "/log.txt"
+                let logFile = appSupportDir.path + "/log.txt"
 
-                if !fm.fileExistsAtPath(logFile) {
-                    fm.createFileAtPath(logFile, contents: nil, attributes: nil)
+                if !fm.fileExists(atPath: logFile) {
+                    fm.createFile(atPath: logFile, contents: nil, attributes: nil)
                 }
 
-                if let fh = NSFileHandle(forUpdatingAtPath: logFile) {
+                if let fh = FileHandle(forUpdatingAtPath: logFile) {
                     fh.seekToEndOfFile()
-                    fh.writeData(self.data)
+                    fh.write(self.data)
                     fh.closeFile()
                 }
-            }
+//            }
         }
     }
 

@@ -15,9 +15,9 @@ class PreferencesWindowController: NSWindowController {
     override var windowNibName: String? { return "PreferencesWindow" }
 
     override func loadWindow() {
-        let rect = CGRectZero
-        let style = NSTitledWindowMask | NSClosableWindowMask
-        window = NSWindow(contentRect: rect, styleMask: style, backing: .Buffered, defer: true)
+        let rect = CGRect.zero
+        let style: NSWindowStyleMask = [.titled, .closable]
+        window = NSWindow(contentRect: rect, styleMask: style, backing: .buffered, defer: true)
         windowFrameAutosaveName = windowNibName
         window?.title = "Preferences"
     }
@@ -33,7 +33,7 @@ class PreferencesViewController: NSViewController {
 
     override func loadView() {
         let size = CGSize(width: 300, height: 250)
-        view = PreferencesView(frame: CGRect(origin: CGPointZero, size: size))
+        view = PreferencesView(frame: CGRect(origin: CGPoint.zero, size: size))
     }
 
 }
@@ -43,35 +43,35 @@ class PreferencesView: NSView {
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
 
-        let userDefaults = NSUserDefaults.standardUserDefaults()
+        let userDefaults = UserDefaults.standard
 
         let stackView = NSStackView(frame: frameRect)
-        stackView.orientation = .Vertical
-        stackView.edgeInsets = NSEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
+        stackView.orientation = .vertical
+        stackView.edgeInsets = EdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         addSubview(stackView)
 
         ["nick", "user", "pass", "realName", "defaultHost"].forEach { (defaultsKey) in
             let textField = defaultsKey == "pass" ? NSSecureTextField() : NSTextField()
-            textField.enabled = true
-            textField.editable = true
-            textField.bind("value", toObject: userDefaults, withKeyPath: defaultsKey, options: nil)
-            stackView.addView(NSStackView(views: [leadingLabel("\(defaultsKey.capitalizedString):"), textField]), inGravity: .Top)
+            textField.isEnabled = true
+            textField.isEditable = true
+            textField.bind("value", to: userDefaults, withKeyPath: defaultsKey, options: nil)
+            stackView.addView(NSStackView(views: [leadingLabel("\(defaultsKey.capitalized):"), textField]), in: .top)
         }
 
         let buttonStackView = NSStackView(views: [leadingLabel("Other:")])
         ["invisible", "autoConnect"].forEach { (defaultsKey) in
             let button = NSButton()
-            button.setButtonType(.SwitchButton)
-            button.attributedTitle = makeLabel(defaultsKey.capitalizedString, alignment: .Left).attributedStringValue
-            button.bind("value", toObject: userDefaults, withKeyPath: defaultsKey, options: nil)
-            buttonStackView.addView(button, inGravity: .Top)
+            button.setButtonType(.switch)
+            button.attributedTitle = makeLabel(defaultsKey.capitalized, alignment: .left).attributedStringValue
+            button.bind("value", to: userDefaults, withKeyPath: defaultsKey, options: nil)
+            buttonStackView.addView(button, in: .top)
         }
 
-        stackView.addView(buttonStackView, inGravity: .Top)
+        stackView.addView(buttonStackView, in: .top)
         stackView.views.forEach { (view) in
-            NSLayoutConstraint(item: view, attribute: .Left, relatedBy: .Equal, toItem: stackView, attribute: .Left, multiplier: 1.0, constant: 20).active = true
-            NSLayoutConstraint(item: view.subviews[0], attribute: .Right, relatedBy: .Equal, toItem: view, attribute: .Left, multiplier: 1.0, constant: 80).active = true
-            NSLayoutConstraint(item: view.subviews[1], attribute: .Left, relatedBy: .Equal, toItem: view.subviews[0], attribute: .Right, multiplier: 1.0, constant: 10).active = true
+            NSLayoutConstraint(item: view, attribute: .left, relatedBy: .equal, toItem: stackView, attribute: .left, multiplier: 1.0, constant: 20).isActive = true
+            NSLayoutConstraint(item: view.subviews[0], attribute: .right, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1.0, constant: 80).isActive = true
+            NSLayoutConstraint(item: view.subviews[1], attribute: .left, relatedBy: .equal, toItem: view.subviews[0], attribute: .right, multiplier: 1.0, constant: 10).isActive = true
         }
     }
 
@@ -79,20 +79,20 @@ class PreferencesView: NSView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func makeLabel(text: String, alignment: NSTextAlignment) -> NSTextField {
+    fileprivate func makeLabel(_ text: String, alignment: NSTextAlignment) -> NSTextField {
         let textField = NSTextField()
-        textField.bezeled = false
+        textField.isBezeled = false
         textField.drawsBackground = false
-        textField.editable = false
-        textField.selectable = false
+        textField.isEditable = false
+        textField.isSelectable = false
         textField.alignment = alignment
         textField.stringValue = text
 
         return textField
     }
 
-    private func leadingLabel(text: String) -> NSTextField {
-        return makeLabel(text, alignment: .Right)
+    fileprivate func leadingLabel(_ text: String) -> NSTextField {
+        return makeLabel(text, alignment: .right)
     }
 
 }

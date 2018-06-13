@@ -11,10 +11,10 @@ import CocoaAsyncSocket.GCDAsyncSocket
 
 protocol IRCDelegate: class {
 
-    func didReceiveBroadcast(message: String)
-    func didReceiveMessage(message: String)
-    func didReceiveUnreadMessageOnChannel(channel: String)
-    func didReceiveError(error: NSError)
+    func didReceiveBroadcast(_ message: String)
+    func didReceiveMessage(_ message: String)
+    func didReceiveUnreadMessageOnChannel(_ channel: String)
+    func didReceiveError(_ error: NSError)
 
 }
 
@@ -34,24 +34,24 @@ class IRCSession: NSObject {
         self.delegate = delegate
         super.init()
 
-        let delegateQueue = dispatch_queue_create("com.heptal.Kathy.tcpQueue", nil)
+        let delegateQueue = DispatchQueue(label: "com.heptal.Kathy.tcpQueue", attributes: [])
         socket = GCDAsyncSocket(delegate: self, delegateQueue: delegateQueue)
-        socket.IPv4PreferredOverIPv6 = false
+//        socket.IPv4PreferredOverIPv6 = false
 
-        currentNick =  NSUserDefaults.standardUserDefaults().stringForKey("nick")
+        currentNick =  UserDefaults.standard.string(forKey: "nick")
 
         channels.addObject(Channel(name: consoleChannelName))
     }
 
     func readSocket() {
-        socket.readDataToData(GCDAsyncSocket.CRLFData(), withTimeout: readTimeout, tag: tag)
+        socket.readData(to: GCDAsyncSocket.crlfData(), withTimeout: readTimeout, tag: tag)
     }
 
-    func connectToHost(host: String, port: UInt16) {
+    func connectToHost(_ host: String, port: UInt16) {
         do {
-            try socket.connectToHost(host, onPort: port)
+            try socket.connect(toHost: host, onPort: port)
             if port == 6697 {
-                socket.startTLS([kCFStreamSSLPeerName: host])
+                socket.startTLS([kCFStreamSSLPeerName as String: host as NSObject])
             }
             readSocket()
         } catch let error as NSError {
@@ -61,12 +61,12 @@ class IRCSession: NSObject {
     }
 
     func authenticate() {
-        let userDefaults = NSUserDefaults.standardUserDefaults()
-        if let nick = userDefaults.stringForKey("nick") {
-            let user = userDefaults.stringForKey("user") ?? nick
-            let realName = userDefaults.stringForKey("realName") ?? nick
-            let invisible = userDefaults.boolForKey("invisible") ? "8" : "0"
-            if let pass = userDefaults.stringForKey("pass") {
+        let userDefaults = UserDefaults.standard
+        if let nick = userDefaults.string(forKey: "nick") {
+            let user = userDefaults.string(forKey: "user") ?? nick
+            let realName = userDefaults.string(forKey: "realName") ?? nick
+            let invisible = userDefaults.bool(forKey: "invisible") ? "8" : "0"
+            if let pass = userDefaults.string(forKey: "pass") {
                 sendIRCMessage(IRCMessage(command: "PASS", params: pass))
             }
             sendIRCMessage(IRCMessage(command: "NICK", params: nick))
@@ -76,13 +76,13 @@ class IRCSession: NSObject {
         }
     }
 
-    func sendIRCMessage(message: IRCMessage) {
-        socket.writeData(message.data, withTimeout: writeTimeout, tag: tag)
+    func sendIRCMessage(_ message: IRCMessage) {
+        socket.write(message.data as Data!, withTimeout: writeTimeout, tag: tag)
     }
 
-    func command(cmd: String) {
+    func command(_ cmd: String) {
         if cmd.hasPrefix("/server") {
-            if let matches = " ([^: ]+)[: ]?(.*)?".captures(cmd), server = matches.first {
+            if let matches = " ([^: ]+)[: ]?(.*)?".captures(cmd), let server = matches.first {
                 connectToHost(server, port: UInt16(matches.last!) ?? 6697)
             }
 
@@ -90,29 +90,29 @@ class IRCSession: NSObject {
         }
 
         if cmd.hasPrefix("/msg") {
-            if let matches = " (\\S+) (.*)".captures(cmd), nick = matches.first, message = matches.last {
+            if let matches = " (\\S+) (.*)".captures(cmd), let nick = matches.first, let message = matches.last {
                 command("/PRIVMSG \(nick) :\(message)")
             }
 
             return
         }
 
-        if let matches = "/(\\S*) ?(.*)".captures(cmd), command = matches.first, params = matches.last {
+        if let matches = "/(\\S*) ?(.*)".captures(cmd), let command = matches.first, let params = matches.last {
             sendIRCMessage(IRCMessage(command: command, params: params))
         }
     }
 
-    func getChannel(channelName: String) -> Channel? {
+    func getChannel(_ channelName: String) -> Channel? {
         return (channels.arrangedObjects as? Array<Channel>)?.filter { channelName == $0.name }.first
     }
 
-    func setupChannel(channelName: String) -> Channel? {
+    func setupChannel(_ channelName: String) -> Channel? {
         if getChannel(channelName) == nil {
             let channel = Channel(name: channelName)
-            if NSThread.isMainThread() {
+            if Thread.isMainThread {
                 channels.addObject(channel)
             } else {
-                dispatch_sync(dispatch_get_main_queue()) {
+                DispatchQueue.main.sync {
                     self.channels.addObject(channel)
                 }
             }
@@ -120,16 +120,16 @@ class IRCSession: NSObject {
         return getChannel(channelName)
     }
 
-    func appendMessageToChannel(channelName: String, message: String) {
+    func appendMessageToChannel(_ channelName: String, message: String) {
         if let channel = setupChannel(channelName) {
             channel.log.append(message)
             if let currentChannel = channels.selectedObjects.first as? Channel {
                 if channel.name == currentChannel.name {
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         self.delegate.didReceiveMessage(message)
                     }
                 } else if channel.name != consoleChannelName {
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         self.delegate.didReceiveUnreadMessageOnChannel(channelName)
                     }
                 }

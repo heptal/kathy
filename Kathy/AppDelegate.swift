@@ -11,14 +11,14 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    @IBAction func openPreferences(sender: AnyObject) {
+    @IBAction func openPreferences(_ sender: AnyObject) {
         PreferencesWindowController.singleton.showWindow(nil)
     }
 
-    func applicationDidFinishLaunching(aNotification: NSNotification) {
-        NSUserNotificationCenter.defaultUserNotificationCenter().delegate = self
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+        NSUserNotificationCenter.default.delegate = self
 
-        NSUserDefaults.standardUserDefaults().registerDefaults([
+        UserDefaults.standard.register(defaults: [
             "nick": "test0rz",
             "user": "test0rz",
             "invisible": false,
@@ -30,11 +30,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ChatWindowController.singleton.showWindow(nil)
     }
 
-    func applicationWillTerminate(aNotification: NSNotification) {
+    func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
     }
 
-    func applicationShouldHandleReopen(sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         ChatWindowController.singleton.showWindow(nil)
         return true
     }
@@ -43,7 +43,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 extension AppDelegate: NSUserNotificationCenterDelegate {
 
-    func userNotificationCenter(center: NSUserNotificationCenter, didActivateNotification notification: NSUserNotification) {
+    func userNotificationCenter(_ center: NSUserNotificationCenter, didActivate notification: NSUserNotification) {
         ChatWindowController.singleton.showWindow(nil)
     }
 
